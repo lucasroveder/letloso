@@ -1,0 +1,314 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap');
+
+:root {
+    --color1: #0f172a;
+    --color2: #1e293b;
+    --color3: #3d3d66;
+    --color4: #009afe;
+    --green: #22c55e;
+    --yellow: #eab308;
+    --red: #b91c1c;
+    --group1-color: #c2410c;
+    --group2-color: #047857;
+    --group3-color: #0e7490;
+    --group4-color: #6d28d9;
+    --text-color: #fff;
+    --bg-color: var(--color1);
+    --bg-lighter-color: var(--color2);
+    --bg-darker-color: var(--color3);
+    --accent-color: var(--color4);
+    --on-accent-color: #fff;
+    --thin-weight: 400;
+    --normal-weight: 600;
+    --bold-weight: 800;
+    --modal-border: 3px solid var(--text-color);
+    --max-size: 720px;
+    --square-size: 7.8rem;
+    --keyboard-height: min(100rem / 2.15, 25vh);
+    --colorRight: var(--green);
+    --colorPlace: var(--yellow);
+    --colorWrong: var(--bg-lighter-color);
+    --colorAvailable: var(--bg-darker-color);
+}
+
+* {
+    box-sizing: border-box;
+    font-family: inherit;
+    font-weight: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: min(720px / 100, 100vw / 100);
+    font-size: min(var(--max-size) / 100, 100vw / 100);
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+}
+
+div{
+    display: block;
+    unicode-bidi: isolate;
+}
+
+.root{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    justify-content: space-between;
+    overflow: hidden;
+    width: 100%;
+}
+
+body {
+    background-color: #0f172a;
+    background-color: var(--bg-color);
+    color: #fff;
+    color: var(--text-color);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    font-weight: var(--normal-weight);
+}
+
+.top-nav {
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.top-handler{
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    max-width: 100rem;
+    padding: 10px;
+    width: 100%;
+}
+
+
+
+.game-title {
+    align-items: center;
+    display: flex;
+    font-size: 24px;
+    font-weight: 800;
+    font-weight: var(--bold-weight);
+    gap: 10px;
+    justify-content: center;
+    text-transform: uppercase;
+}
+
+/* Board and typing line */
+.board-handler{
+    flex-grow: 1;
+    overflow-y: scroll;
+    width: 100%;
+}
+
+.board{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.board {
+    flex-flow: column nowrap;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.typing {
+    height: 7.8rem;
+    height: var(--square-size);
+    position: relative;
+    width: 96.8rem;
+    width: calc(var(--square-size) * 11 + 11rem);
+}
+
+.cursors, .letters {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.letter {
+    align-items: center;
+    border-radius: 5%;
+    display: flex;
+    font-size: 5rem;
+    font-weight: 800;
+    font-weight: var(--bold-weight);
+    justify-content: center;
+    margin: .8rem .5rem;
+    padding-top: .3rem;
+    position: relative;
+}
+
+.empty:before, .letter {
+    height: 7.8rem;
+    height: var(--square-size);
+    text-transform: uppercase;
+    width: 7.8rem;
+    width: var(--square-size);
+}
+.cursor {
+    cursor: text;
+    height: 7.8rem;
+    height: var(--square-size);
+    margin: 1rem .5rem;
+    position: relative;
+    width: 7.8rem;
+}
+
+.cursor:first-of-type {
+    margin-left: 0;
+}
+
+
+
+/* Virtual keyboard */
+.bottom-handler{
+    display:flex;
+    justify-content:center;
+    padding: 2rem 0 3rem 0;
+}
+
+.keyboard{
+    display:flex;
+    flex-direction:column;
+    gap: 0.6rem;
+    align-items:center;
+    width: min(96rem, 720px);
+}
+
+.kb-row{ display:flex; gap:0.6rem; }
+
+.key{
+    background: #4a3d66;
+    color: #fff;
+    border: none;
+    padding: 0.9rem 1.2rem;
+    border-radius: 8%;
+    font-size: 4rem;
+    font-weight: 800;
+    letter-spacing: 0.08rem;
+    cursor: pointer;
+    min-width: 3rem;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.15);
+}
+
+
+.keyboard button {
+    align-items: center;
+    background-color: #3d3d66;
+    background-color: var(--colorAvailable);
+    border: none;
+    border-radius: 8%;
+    color: #fafaff;
+    cursor: pointer;
+    display: flex;
+    font-size: 4rem;
+    font-weight: 800;
+    font-weight: var(--bold-weight);
+    grid-column: span 3;
+    justify-content: center;
+    line-height: 7rem;
+    margin: 0;
+    outline: none;
+    text-transform: uppercase;
+    touch-action: manipulation;
+}
+
+.key:active{ transform: translateY(2px); box-shadow: 0 3px 0 rgba(0,0,0,0.15);} 
+
+.key[data-key="Enter"]{ min-width: 6rem; background:#39304f }
+.key[data-key="Backspace"]{ min-width: 4rem; background:#39304f }
+
+/* Resultados Container */
+.resultados-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    padding: 1rem;
+    overflow-y: auto;
+    max-width: 100%;
+}
+
+.chute-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.3rem;
+}
+
+.chute-row.vitoria {
+    animation: vitoria 0.6s ease-in-out;
+}
+
+@keyframes vitoria {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.letra-tile {
+    width: 7.8rem;
+    height: 7.8rem;
+    border: 2px solid #3a3a3c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 5rem;
+    font-weight: bold;
+    margin-right: 2px;
+    margin-top: 2px;
+    margin-left: 2px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+}
+
+/* Cores de Status */
+.letra-tile.cinza { background-color: #3a3a3c; border-color: #3a3a3c; }
+.letra-tile.amarelo { background-color: #b59f3b; border-color: #b59f3b; }
+.letra-tile.verde { background-color: #538d4e; border-color: #538d4e; }
+
+/* Estilos de Blocos */
+.letra-tile.verde-bloco { background-color: #538d4e; border-color: #538d4e; }
+.letra-tile.amarelo-bloco { background-color: #b59f3b; border-color: #b59f3b; }
+
+/* Estilo de Cápsula para Blocos Verdes */
+.letra-tile.verde-inicio { border-top-left-radius: 5%; border-bottom-left-radius: 5%; margin-left: 2px; border-right: none; margin-right: 0; }
+.letra-tile.verde-meio { border-radius: 0; margin-left: 0; margin-right: 0; border-left: none; border-right: none; }
+.letra-tile.verde-fim { border-top-right-radius: 5%; border-bottom-right-radius: 5%; margin-right: 2px; border-left: none; margin-left: 0; }
+.letra-tile.verde-unico { border-radius: 5%; }
+.letra-tile.verde-inicial-seq { border-top-left-radius: 25px; border-bottom-left-radius: 25px; margin-left: 2px; margin-right: 0; border-right: none; }
+.letra-tile.verde-final-seq { border-top-right-radius: 25px; border-bottom-right-radius: 25px; margin-right: 2px; border-left: none; margin-left: 0px; }
+.letra-tile.verde-inicial { border-top-left-radius: 25px; border-bottom-left-radius: 25px; margin-left: 2px; margin-right: 2px; border-right: none; }
+.letra-tile.verde-final { border-top-right-radius: 25px; border-bottom-right-radius: 25px; margin-right: 2px; border-left: none; margin-left: 2px; }
+
+/* Estilo de Cápsula para Blocos Amarelos */
+.letra-tile.amarelo-inicio { border-top-left-radius: 5%; border-bottom-left-radius: 5%; margin-left: 2px; margin-right: 0; border-right: none; }
+.letra-tile.amarelo-meio { border-radius: 0; margin-left: 0; margin-right: 0; border-left: none; border-right: none; }
+.letra-tile.amarelo-fim { border-top-right-radius: 5%; border-bottom-right-radius: 5%; margin-right: 2px; margin-left: 0; border-left: none; }
+.letra-tile.amarelo-unico { border-radius: 5%; }
+
+/* Vitória */
+.chute-row.vitoria .letra-tile { border-radius: 0; margin-left: 0; margin-right: 0; border-left: none; border-right: none; }
+.chute-row.vitoria .letra-tile:first-child { border-top-left-radius: 25px; border-bottom-left-radius: 25px; margin-left: 2px; margin-right: 0; border-right: none; }
+.chute-row.vitoria .letra-tile:last-child { border-top-right-radius: 25px; border-bottom-right-radius: 25px; margin-right: 2px; border-left: none; margin-left: 0px; }
+
+/* small responsive tweaks */
+@media (max-width:600px){
+    .letter{ width: 2.1rem; height:2.1rem; font-size:1rem }
+    .key{ padding:0.7rem 0.9rem }
+    .letra-tile {
+        width: 2rem;
+        height: 2rem;
+        font-size: 1rem;
+    }
+}
