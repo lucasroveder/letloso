@@ -204,6 +204,11 @@ body {
     box-shadow: 0 6px 0 rgba(0,0,0,0.15);
 }
 
+.key.available { background: var(--colorAvailable); }
+.key.right { background: var(--colorRight); }
+.key.place { background: var(--colorPlace); }
+.key.wrong { background: var(--colorWrong); }
+
 
 .keyboard button {
     align-items: center;

@@ -1,7 +1,8 @@
 const palavrasDisponiveis = ["NEQUIOCA", "TREMILICOS", "ACOGUEIRO", "COQUELUCHE", "LAFUFU", "MACANETA", "CEPIBOLA", "TOFREU", "CYBEROVOS"];
-let palavraSecreta = "NEQUIOCA";
-let chute = '';
-
+let palavrasUsadas = [];
+let palavraSecreta = palavrasDisponiveis[Math.floor(Math.random() * palavrasDisponiveis.length)].toUpperCase();
+palavrasUsadas.push(palavraSecreta);
+let chute = '';let letterStatuses = {};
 document.addEventListener('DOMContentLoaded', () => {
 	const maxLetters = 10;
 	const lettersEl = document.querySelector('.letters');
@@ -43,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (chute.length > 0) {
 				const resultado = processarChute(chute, palavraSecreta);
 				renderizar(chute, resultado);
+				updateKeyboard(chute, resultado);
 				chute = '';
 				render();
 			}
@@ -77,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		row.forEach(k => {
 			const btn = document.createElement('button');
 			btn.type = 'button';
-			btn.className = 'key';
+			btn.className = 'key available';
 			btn.textContent = k === 'Backspace' ? '⌫' : k;
 			btn.dataset.key = k === 'Backspace' ? 'Backspace' : (k === 'Enter' ? 'Enter' : k);
 			btn.addEventListener('click', () => handleKey(btn.dataset.key));
@@ -86,11 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		keyboardEl.appendChild(rowEl);
 	});
 
-	// Clique na logo para mudar palavra
-	const gameTitle = document.querySelector('.game-title');
-	gameTitle.addEventListener('click', mudarPalavra);
 
-	render();
 });
 
 // --- LÓGICA DE PROCESSAMENTO COM 3 PRIORIDADES ---
@@ -325,4 +323,34 @@ function renderizar(chute, resultado) {
         row.appendChild(tile);
     }
     container.appendChild(row);
+}
+
+function updateKeyboard(chute, resultado) {
+    for (let i = 0; i < chute.length; i++) {
+        let letter = chute[i];
+        let status = resultado[i];
+        let current = letterStatuses[letter] || 'available';
+        let newStatus;
+        if (status.includes('verde')) {
+            newStatus = 'right';
+        } else if (status.includes('amarelo')) {
+            newStatus = 'place';
+        } else {
+            newStatus = 'wrong';
+        }
+        // Update only if better: right > place > wrong > available
+        let priorities = { 'right': 4, 'place': 3, 'wrong': 2, 'available': 1 };
+        if (priorities[newStatus] > priorities[current]) {
+            letterStatuses[letter] = newStatus;
+        }
+    }
+    // Update the buttons
+    document.querySelectorAll('.key').forEach(btn => {
+        let key = btn.dataset.key;
+        if (key && key.length === 1) {
+            let status = letterStatuses[key] || 'available';
+            btn.classList.remove('right', 'place', 'wrong', 'available');
+            btn.classList.add(status);
+        }
+    });
 }
