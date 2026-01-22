@@ -1,6 +1,20 @@
 const palavrasDisponiveis = ["NEQUIOCA", "TREMILICOS", "ACOGUEIRO", "COQUELUCHE", "LAFUFU", "MACANETA", "CEPIBOLA", "TOFREU", "CYBEROVOS"];
 let palavrasUsadas = [];
-let palavraSecreta = palavrasDisponiveis[Math.floor(Math.random() * palavrasDisponiveis.length)].toUpperCase();
+let today = new Date().toDateString();
+let storedDate = localStorage.getItem('gameDate');
+let storedWord = localStorage.getItem('palavraSecreta');
+if (storedDate === today && storedWord) {
+    palavraSecreta = storedWord;
+} else {
+    let start = new Date(new Date().getFullYear(), 0, 0);
+    let diff = new Date() - start;
+    let oneDay = 1000 * 60 * 60 * 24;
+    let day = Math.floor(diff / oneDay);
+    let index = day % palavrasDisponiveis.length;
+    palavraSecreta = palavrasDisponiveis[index].toUpperCase();
+    localStorage.setItem('gameDate', today);
+    localStorage.setItem('palavraSecreta', palavraSecreta);
+}
 palavrasUsadas.push(palavraSecreta);
 let chute = '';let letterStatuses = {};
 document.addEventListener('DOMContentLoaded', () => {
