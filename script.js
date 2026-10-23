@@ -1,4 +1,4 @@
-const palavrasDisponiveis = ["NEQUIOCA", "TREMILICOS", "ACOGUEIRO", "COQUELUCHE", "LAFUFU", "MACANETA", "CEPIBOLA", "TOFREU", "CYBEROVOS"];
+const palavrasDisponiveis = ["TREZE"];
 let palavrasUsadas = [];
 let today = new Date().toDateString();
 let storedDate = localStorage.getItem('gameDate');
