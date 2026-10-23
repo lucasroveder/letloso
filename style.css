@@ -317,3 +317,28 @@ body {
         font-size: 1rem;
     }
 }
+
+.game-actions {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0 0;
+}
+
+.novo-jogo-btn {
+    background: #22c55e;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0.8rem 1.4rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: none;
+}
+
+.novo-jogo-btn.hidden {
+    display: none;
+}
+
+.novo-jogo-btn:not(.hidden) {
+    display: inline-block;
+}
