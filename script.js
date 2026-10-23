@@ -1,4 +1,4 @@
-const palavrasDisponiveis = ["TREZE", "LULA", "EXERCITO", "DANONE", "ESTRELA", "DEMOCRACIA", "SOBERANIA", "TRABALHADOR", "ANTOMIMIA", "EDUCACAO", "LUFFY"];
+const palavrasDisponiveis = ["TREZE", "LULA", "EXERCITO", "DANONE", "ESTRELA", "DEMOCRACIA", "SOBERANIA", "TRABALHADOR", "ANTOMIMIA", "EDUCACAO", "PT", "ESQUERDA", "PESQUISA", "SOLDADO"];
 const STORAGE_WORDS = 'palavrasUsadas';
 const STORAGE_CURRENT = 'palavraSecretaAtual';
 
@@ -207,6 +207,22 @@ function processarChute(chute, secreta) {
         }
     }
 
+    res.sequencias = sequenciasValidas;
+    const posicoesSecretasUsadas = new Set();
+    for (let seq of sequenciasValidas) {
+        for (let pos = seq.startSecreta; pos <= seq.endSecreta; pos++) {
+            posicoesSecretasUsadas.add(pos);
+        }
+    }
+
+    const posicoesExtremas = [0, secreta.length - 1];
+    for (let i of posicoesExtremas) {
+        if (i >= chute.length || res[i] !== 'cinza' || chute[i] !== secreta[i] || (inv[chute[i]] || 0) <= 0 || posicoesSecretasUsadas.has(i)) continue;
+        res[i] = 'verde';
+        inv[chute[i]]--;
+        posicoesSecretasUsadas.add(i);
+    }
+
     const validSeqs = sequenciasValidas.filter((s) => s.valida).sort((a, b) => a.startSecreta - b.startSecreta);
     let svIdx = 0;
     let currSecretPos = 0;
@@ -229,7 +245,7 @@ function processarChute(chute, secreta) {
 
         let posSecret = -1;
         for (let j = currSecretPos; j <= upperSecretBound; j++) {
-            if (secreta[j] === letra) {
+            if (secreta[j] === letra && !posicoesSecretasUsadas.has(j)) {
                 posSecret = j;
                 break;
             }
@@ -240,17 +256,19 @@ function processarChute(chute, secreta) {
             currSecretPos = posSecret + 1;
             currChutePos = i + 1;
             inv[letra]--;
+            posicoesSecretasUsadas.add(posSecret);
         } else {
-            let existe = false;
+            let posicaoDisponivel = -1;
             for (let j = 0; j < secreta.length; j++) {
-                if (secreta[j] === letra && (inv[letra] || 0) > 0) {
-                    existe = true;
+                if (secreta[j] === letra && !posicoesSecretasUsadas.has(j) && (inv[letra] || 0) > 0) {
+                    posicaoDisponivel = j;
                     break;
                 }
             }
-            if (existe) {
+            if (posicaoDisponivel !== -1) {
                 res[i] = 'amarelo';
                 inv[letra]--;
+                posicoesSecretasUsadas.add(posicaoDisponivel);
             }
         }
     }
@@ -270,6 +288,11 @@ function encontrarTodasSequencias(chute, secreta, res, inv, sequenciasEncontrada
                 chute[i + k] === secreta[j + k] && res[i + k] === 'cinza') k++;
 
             if (k >= 2) {
+                    const protegeInicio = i === 0 && chute[0] === secreta[0] && j !== 0;
+                    const protegeFinal = i + k === chute.length && chute[chute.length - 1] === secreta[secreta.length - 1] &&
+                        j + k - 1 !== secreta.length - 1 && !(i === 0 && j === 0);
+                    if (protegeInicio || protegeFinal) continue;
+
                 let letrasDisponiveis = true;
                 for (let m = 0; m < k; m++) {
                     if ((inv[chute[i + m]] || 0) <= 0) {
@@ -323,29 +346,20 @@ function renderizar(chute, resultado) {
         if (!vitoria) {
             if (resultado[i].endsWith('-bloco')) {
                 const cor = resultado[i].split('-')[0];
+                const sequencia = resultado.sequencias?.find((seq) => i >= seq.startChute && i <= seq.endChute);
 
-                const isPrevSame = (i > 0 && resultado[i - 1] === resultado[i]);
-                const isNextSame = (i < chute.length - 1 && resultado[i + 1] === resultado[i]);
-
-                const parDireita = isNextSame ? (chute[i] + chute[i + 1]) : '';
-                const parEsquerda = isPrevSame ? (chute[i - 1] + chute[i]) : '';
-
-                const conectaDireita = isNextSame && palavraSecreta.includes(parDireita);
-                const conectaEsquerda = isPrevSame && palavraSecreta.includes(parEsquerda);
-
-                const isFirstLetterMatch = (i === 0 && chute[0] === palavraSecreta[0]);
-                const isLastLetterMatch = (i === chute.length - 1 && chute[i] === palavraSecreta[palavraSecreta.length - 1]);
-
-                if (cor === 'verde' && isFirstLetterMatch && conectaDireita) {
-                    tile.classList.add('verde-inicial-seq');
-                } else if (cor === 'verde' && isLastLetterMatch && conectaEsquerda) {
-                    tile.classList.add('verde-final-seq');
-                } else if (!conectaEsquerda && conectaDireita) {
-                    tile.classList.add(`${cor}-inicio`);
-                } else if (conectaEsquerda && conectaDireita) {
-                    tile.classList.add(`${cor}-meio`);
-                } else if (conectaEsquerda && !conectaDireita) {
-                    tile.classList.add(`${cor}-fim`);
+                if (sequencia) {
+                    if (i === sequencia.startChute && cor === 'verde' && sequencia.startSecreta === 0) {
+                        tile.classList.add('verde-inicial-seq');
+                    } else if (i === sequencia.endChute && cor === 'verde' && sequencia.endSecreta === palavraSecreta.length - 1) {
+                        tile.classList.add('verde-final-seq');
+                    } else if (i === sequencia.startChute) {
+                        tile.classList.add(`${cor}-inicio`);
+                    } else if (i === sequencia.endChute) {
+                        tile.classList.add(`${cor}-fim`);
+                    } else {
+                        tile.classList.add(`${cor}-meio`);
+                    }
                 } else {
                     tile.classList.add(`${cor}-unico`);
                 }
@@ -353,9 +367,9 @@ function renderizar(chute, resultado) {
                 const cor = resultado[i];
 
                 if (cor === 'verde' && i === 0 && chute[0] === palavraSecreta[0]) {
-                    tile.classList.add('verde-inicial');
+                    tile.classList.add('verde-inicial', 'verde-inicial-separada');
                 } else if (cor === 'verde' && i === chute.length - 1 && chute[i] === palavraSecreta[palavraSecreta.length - 1]) {
-                    tile.classList.add('verde-final');
+                    tile.classList.add('verde-final', 'verde-final-separada');
                 } else {
                     tile.classList.add(`${cor}-unico`);
                 }
